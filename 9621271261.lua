@@ -246,11 +246,42 @@ local Radar = nil
 
 _G.InfiniteSprint = false
 _G.FallDamage = false
+_G.FullBright = false
 
+local Lighting = game:GetService("Lighting")
 local Plr = game:GetService("Players").LocalPlayer
 local Char = Plr.Character or Plr.CharacterAdded:wait()
 local Hum = Char:WaitForChild("Humanoid")
 local HRP = Char:WaitForChild("HumanoidRootPart")
+
+-- Full bright target settings
+local fullBrightSettings = {
+	Brightness = 2,
+	ClockTime = 12,
+	Ambient = Color3.new(1, 1, 1),
+	OutdoorAmbient = Color3.new(1, 1, 1),
+	GlobalShadows = false,
+	FogEnd = 1e6,
+	FogStart = 0
+}
+
+-- Function to apply full bright settings
+local function applyFullBright()
+	if not _G.FullBright then return end
+
+	for prop, value in pairs(fullBrightSettings) do
+		if Lighting[prop] ~= value then
+			Lighting[prop] = value
+		end
+	end
+end
+
+-- Detect and fix changes only when enabled
+for prop in pairs(fullBrightSettings) do
+	Lighting:GetPropertyChangedSignal(prop):Connect(function()
+		applyFullBright()
+	end)
+end
 
 function EnableFallDamage(char)
     for _, obj in pairs(char:WaitForChild("FallDamage"):GetDescendants()) do
@@ -365,6 +396,18 @@ local Button = Tab:CreateButton({
 })
 
 local Tab = Window:CreateTab("Visual", "eye")
+
+local Toggle = Tab:CreateToggle({
+    Name = "Full Bright",
+    CurrentValue = false,
+    Flag = "FullBright", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+        _G.FullBright = Value
+        if _G.FullBright then
+            applyFullBright()
+        end
+    end,
+})
 
 local Toggle = Tab:CreateToggle({
     Name = "Radar",
