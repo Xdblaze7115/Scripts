@@ -21,7 +21,7 @@ local CoreGui = game:GetService("CoreGui")
 local Plrs = game:GetService("Players")
 
 -- [ Variables ] --
-local ws = WebSocket.connect("wss://hyperionencryptchat.onrender.com")
+local ws = WebSocket.connect("wss://hyperionencryptchat.railway.internal")
 local Plr = Plrs.LocalPlayer
 
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
