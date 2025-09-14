@@ -155,11 +155,9 @@ local function NewMessageLabel(text)
 	TextLabel.TextWrapped = true
 	TextLabel.TextXAlignment = Enum.TextXAlignment.Left
 	TextLabel.TextYAlignment = Enum.TextYAlignment.Top
-	
-	local isAtBottom = Chat.CanvasPosition.Y >= Chat.AbsoluteCanvasSize.Y - Chat.AbsoluteSize.Y - 2
-	if isAtBottom then
-		Chat.CanvasPosition = Vector2.new(0, Chat.AbsoluteCanvasSize.Y - Chat.AbsoluteSize.Y)
-	end
+
+	task.wait()
+	Chat.CanvasPosition = Vector2.new(0, Chat.CanvasPosition.Y + TextLabel.AbsoluteSize.Y + UIListLayout.Padding.Offset)
 end
 
 local function NewBubble(username, message)
@@ -293,7 +291,7 @@ ws.OnClose:Connect(function()
 end)
 
 UIS.InputBegan:Connect(function(Input)
-	if TextBox.Focused then return end
+	if TextBox.IsFocused then return end
 	if Input.KeyCode == Enum.KeyCode.Slash and not UIS:IsKeyDown(Enum.KeyCode.LeftShift) and not UIS:IsKeyDown(Enum.KeyCode.RightShift) then
         local Text = TextBox.Text
 		TextBox:CaptureFocus()
