@@ -1,3 +1,4 @@
+_G.HyperionLoaded = false
 if not game:IsLoaded() then game.Loaded:Wait() end
 if _G.HyperionLoaded then
 	warn("Hyperion Has Already Been Loaded!")
@@ -7,7 +8,6 @@ else
 end
 
 -- [ Globals ] --
-_G.HyperionLoaded = false
 local WS = nil
 local WSEnabled = false
 
