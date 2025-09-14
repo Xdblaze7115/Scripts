@@ -155,9 +155,11 @@ local function NewMessageLabel(text)
 	TextLabel.TextWrapped = true
 	TextLabel.TextXAlignment = Enum.TextXAlignment.Left
 	TextLabel.TextYAlignment = Enum.TextYAlignment.Top
-
-	task.wait()
-	Chat.CanvasPosition = Vector2.new(0, Chat.CanvasPosition.Y + TextLabel.AbsoluteSize.Y + UIListLayout.Padding.Offset)
+	
+	local isAtBottom = Chat.CanvasPosition.Y >= Chat.AbsoluteCanvasSize.Y - Chat.AbsoluteSize.Y - 2
+	if isAtBottom then
+		Chat.CanvasPosition = Vector2.new(0, Chat.AbsoluteCanvasSize.Y - Chat.AbsoluteSize.Y)
+	end
 end
 
 local function NewBubble(username, message)
