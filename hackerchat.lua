@@ -354,7 +354,7 @@ function Hyperion:CreateChat()
         if EnteredText == "" then return end
         TextBox.Text = ""
         
-        if _G.WSEnabled then
+        if WSEnabled then
             GUI:SendWS(Player.Name, Player.DisplayName, EnteredText)
         else
             GUI:SendChat(EnteredText)
