@@ -113,7 +113,7 @@ Chat.BorderSizePixel = 0
 Chat.Position = UDim2.new(0, 10, 0, 10)
 Chat.Size = UDim2.new(0, 430, 0, 185)
 Chat.AutomaticCanvasSize = Enum.AutomaticSize.Y
-Chat.CanvasSize = UDim2.new(0, 0, 1, 0)
+Chat.CanvasSize = UDim2.new(0, 0, 0, 0)
 Chat.ScrollBarThickness = 0
 
 UIListLayout.Parent = Chat
