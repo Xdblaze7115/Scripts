@@ -227,7 +227,7 @@ end
 local function SendWSMessage(username, nickname, message)
 	local data = {
 		type = "chatted",
-		username,
+		username = username,
 		nickname = nickname,
 		message = message
 	}
@@ -262,7 +262,6 @@ ws.OnMessage:Connect(function(message)
 		NewBubble(data.username, data.message)
 	end
 end)
-
 
 if TextChatService.ChatVersion == Enum.ChatVersion.LegacyChatService then
 	-- Legacy Chat
