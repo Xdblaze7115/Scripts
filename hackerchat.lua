@@ -251,12 +251,11 @@ end
 
 -- [ Connections ] --
 ws.OnMessage:Connect(function(message)
-	if not message or message == "" then
+	if not message then
 		return
 	end
 
 	local data = HttpService:JSONDecode(message)
-	
 	if data.type == "chatted" and data.username and data.nickname and data.message then
 		NewMessageLabel(`<font color="#ff0000">WS</font> | <font color="#008CFF">{data.nickname}:</font> {data.message}`)
 		NewBubble(data.username, data.message)
@@ -338,6 +337,7 @@ Plrs.PlayerRemoving:Connect(function(plr)
     if plr == Plr then
         CloseConnection()
     end
+	NewMessageLabel(`<font color="#55ff7f">{plr.DisplayName} Has Left The Game</font>`)
 end)
 
 Plrs.PlayerAdded:Connect(function(plr)
