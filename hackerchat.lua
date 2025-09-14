@@ -38,7 +38,7 @@ local Hyperion = {}
 
 function Hyperion:CreateChat()
     -- [ Instances ] --
-    local HyperionEncryptChat = Instance.new("ScreenGui")
+    local HyperionChat = Instance.new("ScreenGui")
     local Container = Instance.new("Frame")
     local UICorner = Instance.new("UICorner")
     local TextBox = Instance.new("TextBox")
@@ -51,12 +51,13 @@ function Hyperion:CreateChat()
     local UIListLayout = Instance.new("UIListLayout")
 
     -- [ Properties ] --
-    HyperionEncryptChat.Name = "HyperionEncryptChat"
-    HyperionEncryptChat.Parent = CoreGui
-    HyperionEncryptChat.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    HyperionChat.Name = "HyperionChat"
+    HyperionChat.Parent = CoreGui
+    HyperionChat.ResetOnSpawn = false
+    HyperionChat.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
     Container.Name = "Container"
-    Container.Parent = HyperionEncryptChat
+    Container.Parent = HyperionChat
     Container.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     Container.BackgroundTransparency = 0.200
     Container.BorderColor3 = Color3.fromRGB(0, 0, 0)
