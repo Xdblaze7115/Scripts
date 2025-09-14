@@ -291,7 +291,7 @@ ws.OnClose:Connect(function()
 end)
 
 UIS.InputBegan:Connect(function(Input)
-	if TextBox.IsFocused() then return end
+	if TextBox:IsFocused() then return end
 	if Input.KeyCode == Enum.KeyCode.Slash and not UIS:IsKeyDown(Enum.KeyCode.LeftShift) and not UIS:IsKeyDown(Enum.KeyCode.RightShift) then
         local Text = TextBox.Text
 		TextBox:CaptureFocus()
