@@ -1,5 +1,13 @@
+if not game:IsLoaded() then game.Loaded:Wait() end
+if _G.HyperionLoaded then
+	warn("Hyperion Has Already Been Loaded!")
+	return
+else
+    HyperionLoaded = true
+end
+
 -- [ Globals ] --
-local HyperionLoaded = false
+_G.HyperionLoaded = false
 local WS = nil
 local WSEnabled = false
 
@@ -25,18 +33,11 @@ local Player = Players.LocalPlayer
 local Mouse = Player:GetMouse()
 local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
 
-if not game:IsLoaded() then game.Loaded:Wait() end
-if HyperionLoaded then
-	warn("Hyperion Has Already Been Loaded!")
-	return
-else
-    HyperionLoaded = true
-    StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
-end
-
 local Hyperion = {}
 
 function Hyperion:CreateChat()
+    StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
+
     -- [ Instances ] --
     local HyperionChat = Instance.new("ScreenGui")
     local Container = Instance.new("Frame")
