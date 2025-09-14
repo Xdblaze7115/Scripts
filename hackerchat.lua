@@ -1,13 +1,13 @@
-_G.HyperionLoaded = false
 if not game:IsLoaded() then game.Loaded:Wait() end
 if _G.HyperionLoaded then
 	warn("Hyperion Has Already Been Loaded!")
 	return
 else
-    HyperionLoaded = true
+    _G.HyperionLoaded = true
 end
 
 -- [ Globals ] --
+_G.ChatLoaded = false
 local WS = nil
 local WSEnabled = false
 
@@ -36,6 +36,8 @@ local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirecti
 local Hyperion = {}
 
 function Hyperion:CreateChat()
+    if _G.ChatLoaded then return end
+    _G.ChatLoaded = true
     StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
 
     -- [ Instances ] --
