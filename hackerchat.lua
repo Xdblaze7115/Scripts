@@ -341,5 +341,5 @@ Plrs.PlayerRemoving:Connect(function(plr)
 end)
 
 Plrs.PlayerAdded:Connect(function(plr)
-	NewMessageLabel(`<font color="#55ff7f">{plr.DisplayName} Has Joined The Game!</font>`)
+	NewMessageLabel(`<font color="#55ff7f">{plr.DisplayName} Has Joined The Game</font>`)
 end)
