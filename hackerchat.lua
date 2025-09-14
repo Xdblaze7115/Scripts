@@ -5,8 +5,9 @@ if _G.HyperionEncryptChatLoaded then
 end
 
 -- [ Globals ] --
+_G.WS = nil
 _G.HyperionEncryptChatLoaded = true
-_G.WS = false
+_G.WSEnabled = false
 
 -- [ Connections ] --
 _G.BubbleFadeConnection = nil
@@ -21,7 +22,6 @@ local CoreGui = game:GetService("CoreGui")
 local Plrs = game:GetService("Players")
 
 -- [ Variables ] --
-local ws = WebSocket.connect("wss://hyperionencryptchat-production.up.railway.app")
 local Plr = Plrs.LocalPlayer
 
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
@@ -122,8 +122,8 @@ UIListLayout.Padding = UDim.new(0, 5)
 
 -- [ Functions ] --
 function ToggleWS()
-	_G.WS = not _G.WS
-	if _G.WS then
+	_G.WSEnabled = not _G.WSEnabled
+	if _G.WSEnabled then
 		TextButton.BackgroundColor3 = Color3.new(0, 255, 0)
 	else
 		TextButton.BackgroundColor3 = Color3.new(255, 0, 0)
@@ -131,13 +131,6 @@ function ToggleWS()
 end
 
 -- [ Local Functions ] --
-
-local function CloseConnection()
-	if ws and ws.Connected then
-		ws:Close()
-	end
-end
-
 local function NewMessageLabel(text)
 	local TextLabel = Instance.new("TextLabel")
 	TextLabel.Parent = Chat
@@ -226,13 +219,19 @@ local function NewBubble(username, message)
 end
 
 local function SendWSMessage(username, nickname, message)
+	if message and #message > 100000 then
+		message = message:sub(1, 100000)
+	end
+
 	local data = {
 		type = "chatted",
 		username = username,
 		nickname = nickname,
 		message = message
 	}
-	ws:Send(HttpService:JSONEncode(data))
+	_G.WS:Send(HttpService:JSONEncode(data))
+	NewMessageLabel(`<font color="#ff0000">WS</font> | <font color="#008CFF">{nickname}:</font> {message}`)
+	NewBubble(username, message)
 end
 
 local function SendChatMessage(text)
@@ -251,18 +250,6 @@ local function SendChatMessage(text)
 end
 
 -- [ Connections ] --
-ws.OnMessage:Connect(function(message)
-	if not message then
-		return
-	end
-
-	local data = HttpService:JSONDecode(message)
-	if data.type == "chatted" and data.username and data.nickname and data.message then
-		NewMessageLabel(`<font color="#ff0000">WS</font> | <font color="#008CFF">{data.nickname}:</font> {data.message}`)
-		NewBubble(data.username, data.message)
-	end
-end)
-
 if TextChatService.ChatVersion == Enum.ChatVersion.LegacyChatService then
 	-- Legacy Chat
 	RS.DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Connect(function(messageData)
@@ -286,9 +273,43 @@ else
 	end
 end
 
-ws.OnClose:Connect(function()
-	print("Connection closed")
-end)
+local function AttachWSListeners(ws)
+    ws.OnMessage:Connect(function(message)
+        if not message then return end
+        local data = HttpService:JSONDecode(message)
+        if data.type == "chatted" and data.username and data.nickname and data.message then
+			if #data.message > 100000 then
+				data.message = data.message:sub(1, 100000)
+			end
+
+            NewMessageLabel('<font color="#ff0000">WS</font> | <font color="#008CFF">'..data.nickname..':</font> '..data.message)
+            NewBubble(data.username, data.message)
+        end
+    end)
+
+    ws.OnClose:Connect(function()
+        print("Connection closed, reconnecting...")
+        task.spawn(function()
+            local success, newWS
+            repeat
+                task.wait(1) -- wait 1 second before retry
+                success, newWS = pcall(WebSocket.connect, "wss://hyperionencryptchat-production.up.railway.app")
+            until success and newWS
+
+            _G.WS = newWS
+            AttachWSListeners(_G.WS) -- reattach listeners recursively
+        end)
+    end)
+end
+
+-- initial connection
+local success, ws = pcall(WebSocket.connect, "wss://hyperionencryptchat-production.up.railway.app")
+if success and ws then
+    _G.WS = ws
+    AttachWSListeners(_G.WS)
+else
+    warn("Failed to connect to WS initially")
+end
 
 UIS.InputBegan:Connect(function(Input)
 	if TextBox:IsFocused() then return end
@@ -306,10 +327,8 @@ UIS.InputBegan:Connect(function(Input)
 		if EnteredText == "" then return end
 		TextBox.Text = ""
 		
-		if _G.WS then
+		if _G.WSEnabled then
 			SendWSMessage(Plr.Name, Plr.DisplayName, EnteredText)
-			NewMessageLabel(`<font color="#ff0000">WS</font> | <font color="#008CFF">{Plr.DisplayName}:</font> {EnteredText}`)
-			NewBubble(Plr.Name, EnteredText)
 		else
 			SendChatMessage(EnteredText)
 		end
@@ -325,19 +344,14 @@ ImageButton.MouseButton1Click:Connect(function()
 	if EnteredText == "" then return end
 	TextBox.Text = ""
 	
-	if _G.WS then
+	if _G.WSEnabled then
 		SendWSMessage(Plr.Name, Plr.DisplayName, EnteredText)
-		NewMessageLabel(`<font color="#ff0000">WS</font> | <font color="#008CFF">{Plr.DisplayName}:</font> {EnteredText}`)
-		NewBubble(Plr.Name, EnteredText)
 	else
 		SendChatMessage(EnteredText)
 	end
 end)
 
 Plrs.PlayerRemoving:Connect(function(plr)
-    if plr == Plr then
-        CloseConnection()
-    end
 	NewMessageLabel(`<font color="#55ff7f">{plr.DisplayName} Has Left The Game</font>`)
 end)
 
