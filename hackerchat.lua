@@ -131,7 +131,7 @@ function Hyperion:CreateChat()
     TextBox.PlaceholderColor3 = Color3.fromRGB(100, 100, 100)
     TextBox.PlaceholderText = "To chat click here or press / key"
     TextBox.Text = ""
-    TextBox.TextColor3 = Color3.fromRGB(100, 100, 100)
+    TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
     TextBox.TextSize = 14.000
     TextBox.TextStrokeTransparency = 0.500
     TextBox.TextXAlignment = Enum.TextXAlignment.Left
@@ -187,7 +187,7 @@ function Hyperion:CreateChat()
     TextBox_2.PlaceholderColor3 = Color3.fromRGB(100, 100, 100)
     TextBox_2.PlaceholderText = "To chat click here or press / key"
     TextBox_2.Text = ""
-    TextBox_2.TextColor3 = Color3.fromRGB(100, 100, 100)
+    TextBox_2.TextColor3 = Color3.fromRGB(255, 255, 255)
     TextBox_2.TextSize = 14.000
     TextBox_2.TextStrokeTransparency = 0.500
     TextBox_2.TextXAlignment = Enum.TextXAlignment.Left
