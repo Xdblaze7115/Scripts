@@ -255,7 +255,8 @@ function Hyperion:CreateChat()
     Title.BackgroundTransparency = 1.000
     Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Title.BorderSizePixel = 0
-    Title.Position = UDim2.new(0, 65, 0, 10)
+    Title.AnchorPoint = Vector2.new(0.5, 0)
+    Title.Position = UDim2.new(0.5, 0, 0, 10)
     Title.Size = UDim2.new(0, 120, 0, 15)
     Title.Font = Enum.Font.SourceSansBold
     Title.Text = "CLIENTS ONLINE"
@@ -274,7 +275,8 @@ function Hyperion:CreateChat()
     Separator.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Separator.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Separator.BorderSizePixel = 0
-    Separator.Position = UDim2.new(0, 15, 0, 35)
+    Separator.AnchorPoint = Vector2.new(0.5, 0)
+    Separator.Position = UDim2.new(0.5, 0, 0, 35)
     Separator.Size = UDim2.new(0, 220, 0, 2)
 
     UICorner_6.CornerRadius = UDim.new(0, 10)
@@ -456,7 +458,7 @@ function Hyperion:CreateChat()
                     username = Player.Name,
                     nickname = Player.DisplayName
                 }
-                _G.WS:Send(HttpService:JSONEncode(data))
+                WS:Send(HttpService:JSONEncode(data))
                 GUI:NewTextLabel(List, data.username, `<font color="#008CFF">{data.nickname}  ({data.username})</font>`)
             end
         end)
@@ -562,7 +564,7 @@ function Hyperion:CreateChat()
     end)
 
     UserInputService.InputBegan:Connect(function(Input)
-        if Input.KeyCode == Enum.KeyCode.O then
+        if Input.KeyCode == Enum.KeyCode.P then
             ClientsOnline.Visible = not ClientsOnline.Visible
         end
     end)
