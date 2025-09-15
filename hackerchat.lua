@@ -29,11 +29,26 @@ local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 
 -- [ Variables ] --
+local SecretKey = "MetBlockMors"
 local Player = Players.LocalPlayer
 local Mouse = Player:GetMouse()
 local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
 
 local Hyperion = {}
+
+function Hyperion:xorEncrypt(str, key)
+    local result = {}
+    for i = 1, #str do
+        local char = string.byte(str, i)
+        local keyByte = string.byte(key, ((i - 1) % #key) + 1)
+        result[i] = string.char(bit32.bxor(char, keyByte))
+    end
+    return table.concat(result)
+end
+
+function Hyperion:xorDecrypt(str, key)
+    return Hyperion:xorEncrypt(str, key)
+end
 
 function Hyperion:CreateChat()
     if _G.ChatLoaded then return end
@@ -238,11 +253,14 @@ function Hyperion:CreateChat()
             message = message:sub(1, 100000)
         end
 
+        local encryptedmessage = Hyperion:xorEncrypt(message, SecretKey)
+        local encodedmessage = HttpService:Base64Encode(encryptedmessage)
+
         local data = {
             type = "chatted",
             username = username,
             nickname = nickname,
-            message = message
+            message = encodedmessage
         }
         WS:Send(HttpService:JSONEncode(data))
         GUI:NewMessageLabel(`<font color="#ff0000">WS</font> | <font color="#008CFF">{nickname}:</font> {message}`)
@@ -272,8 +290,12 @@ function Hyperion:CreateChat()
                 if #data.message > 100000 then
                     data.message = data.message:sub(1, 100000)
                 end
+                
+                local decoded = HttpService:Base64Decode(data.message)
+                local decrypted = Hyperion:xorDecrypt(decoded, SecretKey)
+                data.message = decrypted
 
-                GUI:NewMessageLabel('<font color="#ff0000">WS</font> | <font color="#008CFF">'..data.nickname..':</font> '..data.message)
+                GUI:NewMessageLabel(`<font color="#ff0000">WS</font> | <font color="#008CFF">{data.nickname}:</font> {data.message}`)
                 GUI:NewBubble(data.username, data.message)
             end
         end)
