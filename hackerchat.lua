@@ -561,15 +561,17 @@ function Hyperion:CreateChat()
             if Container.Visible then
                 TweenService:Create(Container, tweenInfo, { BackgroundTransparency = 1 }):Play()
                 for i, v in pairs(Container:GetDescendants()) do
-                    if v.BackgroundTransparency == nil then return end
-                    TweenService:Create(v, tweenInfo, { BackgroundTransparency = 1 }):Play()
+                    if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("ImageLabel") or v:IsA("ImageButton") then
+                        TweenService:Create(v, tweenInfo, { BackgroundTransparency = 1 }):Play()
+                    end
                 end
                 Container.Visible = false
             else
                 TweenService:Create(Container, tweenInfo, { BackgroundTransparency = 0.2 }):Play()
                 for i, v in pairs(Container:GetDescendants()) do
-                    if v.BackgroundTransparency == nil then return end
-                    TweenService:Create(v, tweenInfo, { BackgroundTransparency = 0 }):Play()
+                    if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("ImageLabel") or v:IsA("ImageButton") then
+                        TweenService:Create(v, tweenInfo, { BackgroundTransparency = 0 }):Play()
+                    end
                 end
                 Container.Visible = true
             end
@@ -585,15 +587,17 @@ function Hyperion:CreateChat()
             if ClientsOnline.Visible then
                 TweenService:Create(ClientsOnline, tweenInfo, { BackgroundTransparency = 0 }):Play()
                 for i, v in pairs(ClientsOnline:GetDescendants()) do
-                    if v.BackgroundTransparency == nil then return end
-                    TweenService:Create(v, tweenInfo, { BackgroundTransparency = 1 }):Play()
+                    if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("ImageLabel") or v:IsA("ImageButton") then
+                        TweenService:Create(v, tweenInfo, { BackgroundTransparency = 1 }):Play()
+                    end
                 end
                 ClientsOnline.Visible = false
             else
                 TweenService:Create(ClientsOnline, tweenInfo, { BackgroundTransparency = 0 }):Play()
                 for i, v in pairs(ClientsOnline:GetDescendants()) do
-                    if v.BackgroundTransparency == nil then return end
-                    TweenService:Create(v, tweenInfo, { BackgroundTransparency = 0.2 }):Play()
+                    if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("ImageLabel") or v:IsA("ImageButton") then
+                        TweenService:Create(v, tweenInfo, { BackgroundTransparency = 0.2 }):Play()
+                    end
                 end
                 ClientsOnline.Visible = true
             end
