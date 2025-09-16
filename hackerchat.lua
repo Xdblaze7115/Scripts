@@ -559,13 +559,19 @@ function Hyperion:CreateChat()
         and UserInputService:IsKeyDown(Enum.KeyCode.RightShift) then
             local tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
             if Container.Visible then
-                for i, v in pairs(Container:GetChildren()) do
-                    TweenService:Create(Tabs, tweenInfo, { Transparency = 0 }):Play()
+                TweenService:Create(Container, tweenInfo, { BackgroundTransparency = 1 }):Play()
+                for i, v in pairs(Container:GetDescendants()) do
+                    if not v.Transparency then return end
+                    TweenService:Create(v, tweenInfo, { BackgroundTransparency = 1 }):Play()
                 end
+                Container.Visible = false
             else
-                for i, v in pairs(Container:GetChildren()) do
-                    TweenService:Create(Tabs, tweenInfo, { Transparency = 1 }):Play()
+                TweenService:Create(Container, tweenInfo, { BackgroundTransparency = 0.2 }):Play()
+                for i, v in pairs(Container:GetDescendants()) do
+                    if not v.Transparency then return end
+                    TweenService:Create(v, tweenInfo, { BackgroundTransparency = 0 }):Play()
                 end
+                Container.Visible = true
             end
         end
     end)
@@ -577,13 +583,19 @@ function Hyperion:CreateChat()
         and UserInputService:IsKeyDown(Enum.KeyCode.RightShift) then
             local tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
             if ClientsOnline.Visible then
-                for i, v in pairs(Container:GetChildren()) do
-                    TweenService:Create(ClientsOnline, tweenInfo, { Transparency = 0 }):Play()
+                TweenService:Create(ClientsOnline, tweenInfo, { BackgroundTransparency = 0 }):Play()
+                for i, v in pairs(ClientsOnline:GetDescendants()) do
+                    if not v.Transparency then return end
+                    TweenService:Create(v, tweenInfo, { BackgroundTransparency = 1 }):Play()
                 end
+                ClientsOnline.Visible = false
             else
-                for i, v in pairs(Container:GetChildren()) do
-                    TweenService:Create(ClientsOnline, tweenInfo, { Transparency = 1 }):Play()
+                TweenService:Create(ClientsOnline, tweenInfo, { BackgroundTransparency = 0 }):Play()
+                for i, v in pairs(ClientsOnline:GetDescendants()) do
+                    if not v.Transparency then return end
+                    TweenService:Create(v, tweenInfo, { BackgroundTransparency = 0.2 }):Play()
                 end
+                ClientsOnline.Visible = true
             end
         end
     end)
