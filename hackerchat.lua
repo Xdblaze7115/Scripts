@@ -347,6 +347,9 @@ function Hyperion:CreateChat()
         TextLabelM.TextStrokeTransparency = 0.500
         TextLabelM.TextWrapped = true
         TextLabelM.TextXAlignment = Enum.TextXAlignment.Left
+        
+        task.wait()
+        parent.CanvasPosition = Vector2.new(0, parent.CanvasPosition.Y + TextLabelM.AbsoluteSize.Y + UIListLayout.Padding.Offset)
     end
 
     function GUI:NewBubble(username, message)
