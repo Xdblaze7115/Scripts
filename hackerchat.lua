@@ -526,14 +526,14 @@ function Hyperion:CreateChat()
         if table[parent] == nil then
             table[parent] = parent.BackgroundTransparency
         end
-        TweenService:Create(parent, tweenInfo, {BackgroundTransparency = 0}):Play()
+        TweenService:Create(parent, tweenInfo, {BackgroundTransparency = 1}):Play()
 
         for _, v in ipairs(parent:GetDescendants()) do
             if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("ImageLabel") or v:IsA("ImageButton") then
                 if table[v] == nil then
                     table[v] = v.BackgroundTransparency
                 end
-                TweenService:Create(v, tweenInfo, {BackgroundTransparency = 0}):Play()
+                TweenService:Create(v, tweenInfo, {BackgroundTransparency = 1}):Play()
             end
         end
         task.wait(tweenInfo.Time)
@@ -602,7 +602,6 @@ function Hyperion:CreateChat()
         and UserInputService:IsKeyDown(Enum.KeyCode.LeftShift)
         or Input.KeyCode == Enum.KeyCode.P
         and UserInputService:IsKeyDown(Enum.KeyCode.RightShift) then
-            local tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
             if ClientsOnline.Visible then
                 GUI:SmoothHideUI(ClientsOnlineUITransparencies, ClientsOnline)
                 ClientsOnline.Visible = false
