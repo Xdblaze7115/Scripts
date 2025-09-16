@@ -132,7 +132,7 @@ function Hyperion:CreateChat()
     TextBox.PlaceholderText = "To chat click here or press / key"
     TextBox.Text = ""
     TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    TextBox.TextSize = 14.000
+    TextBox.TextSize = 16.000
     TextBox.TextStrokeTransparency = 0.500
     TextBox.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -188,7 +188,7 @@ function Hyperion:CreateChat()
     TextBox_2.PlaceholderText = "To chat click here or press / key"
     TextBox_2.Text = ""
     TextBox_2.TextColor3 = Color3.fromRGB(255, 255, 255)
-    TextBox_2.TextSize = 14.000
+    TextBox_2.TextSize = 16.000
     TextBox_2.TextStrokeTransparency = 0.500
     TextBox_2.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -451,27 +451,25 @@ function Hyperion:CreateChat()
 
     function GUI:AttachListeners(ws)
         task.spawn(function()
-            while WS do
+            while ws and ws.Connected do
                 task.wait(10)
                 local data = {
                     type = "alive",
                     username = Player.Name,
                     nickname = Player.DisplayName
                 }
-                WS:Send(HttpService:JSONEncode(data))
+                ws:Send(HttpService:JSONEncode(data))
                 GUI:NewTextLabel(List, data.username, `<font color="#008CFF">{data.nickname}  ({data.username})</font>`)
             end
         end)
 
         task.spawn(function()
-            while WS do
+            while ws and ws.Connected do
                 task.wait(5)
                 local now = os.clock()
-                local index = 0
-                for user, data in ipairs(AliveClients) do
-                    index += 1
+                for user, data in pairs(AliveClients) do
                     if now - data.last > 30 then
-                        table.remove(AliveClients, index)
+                        AliveClients[user] = nil
                         for _, child in pairs(List:GetChildren()) do
                             if child:IsA("TextLabel") and child.Name == user then
                                 child:Destroy()
