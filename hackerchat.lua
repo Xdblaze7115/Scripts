@@ -38,7 +38,7 @@ local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirecti
 local Hyperion = {}
 
 local HyperionGui = Instance.new("ScreenGui")
-HyperionGui.Name = "HyperionChat"
+HyperionGui.Name = "Hyperion"
 HyperionGui.Parent = CoreGui
 HyperionGui.ResetOnSpawn = false
 HyperionGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -568,27 +568,42 @@ function Hyperion:CreateChat()
     end)
 
     UserInputService.InputBegan:Connect(function(Input)
-        if TextBox:IsFocused() then return end
         if Input.KeyCode == Enum.KeyCode.Slash
         and not UserInputService:IsKeyDown(Enum.KeyCode.LeftShift)
         and not UserInputService:IsKeyDown(Enum.KeyCode.RightShift) then
-            local Text = TextBox.Text
-            TextBox:CaptureFocus()
-            task.wait()
-            TextBox.Text = Text
+            if Tabs.Position == UDim2.new(0, 0, 0, 0) then
+                if TextBox_2:IsFocused() then return end
+                local Text = TextBox_2.Text
+                TextBox_2:CaptureFocus()
+                task.wait()
+                TextBox_2.Text = Text
+            else
+                if TextBox:IsFocused() then return end
+                local Text = TextBox.Text
+                TextBox:CaptureFocus()
+                task.wait()
+                TextBox.Text = Text
+            end
         end
     end)
 
     UserInputService.InputBegan:Connect(function(Input)
         if Input.KeyCode == Enum.KeyCode.Return then
-            local EnteredText = TextBox.Text
-            if EnteredText == "" then return end
-            TextBox.Text = ""
             
-            if WSEnabled then
-                GUI:SendWS(Player.Name, Player.DisplayName, EnteredText)
+            if Tabs.Position == UDim2.new(0, 0, 0, 0) then
+                local EnteredText = TextBox_2.Text
+                if EnteredText == "" then return end
+                TextBox_2.Text = ""
+                if WSEnabled then
+                    GUI:SendWS(Player.Name, Player.DisplayName, EnteredText)
+                else
+                    GUI:SendChat(EnteredText)
+                end
             else
-                GUI:SendChat(EnteredText)
+                local EnteredText = TextBox.Text
+                if EnteredText == "" then return end
+                TextBox.Text = ""
+                GUI:SendWS(Player.Name, Player.DisplayName, EnteredText)
             end
         end
     end)
@@ -601,6 +616,14 @@ function Hyperion:CreateChat()
         local EnteredText = TextBox.Text
         if EnteredText == "" then return end
         TextBox.Text = ""
+        
+        GUI:SendWS(Player.Name, Player.DisplayName, EnteredText)
+    end)
+
+    ImageButton.MouseButton1Click:Connect(function()
+        local EnteredText = TextBox_2.Text
+        if EnteredText == "" then return end
+        TextBox_2.Text = ""
         
         if WSEnabled then
             GUI:SendWS(Player.Name, Player.DisplayName, EnteredText)
@@ -624,9 +647,9 @@ function Hyperion:CreateChat()
                 WS = nil
             end
 
-            _G.HyperionLoaded = false
             _G.ChatLoaded = false
         end
+        
         GUI:NewMessageLabel(Chat, `<font color="#55ff7f">{plr.DisplayName} Has Left The Game</font>`)
     end)
 
