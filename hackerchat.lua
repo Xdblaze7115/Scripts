@@ -36,8 +36,10 @@ HyperionGui.ResetOnSpawn = false
 HyperionGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 function Hyperion:CreateChat()
-    _G.ChatLoaded = false
-    if _G.ChatLoaded then return end
+    if _G.ChatLoaded then 
+        warn("Chat Already Loaded!") 
+        return 
+    end
     _G.ChatLoaded = true
     StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
 
@@ -526,6 +528,14 @@ function Hyperion:CreateChat()
                         child:Destroy()
                         break
                     end
+                end
+                if WSOnMessageConnection then
+                    WSOnMessageConnection:Disconnect()
+                    WSOnMessageConnection = nil
+                end
+                if WSOncloseConnection then
+                    WSOncloseConnection:Disconnect()
+                    WSOncloseConnection = nil
                 end
                 GUI:AttachListeners(WS)
             end)
