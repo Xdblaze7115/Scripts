@@ -241,7 +241,7 @@ function Hyperion:CreateChat()
     ClientsOnline.BorderColor3 = Color3.fromRGB(0, 0, 0)
     ClientsOnline.BorderSizePixel = 0
     ClientsOnline.Position = UDim2.new(0, 465, 0, 5)
-    ClientsOnline.Size = UDim2.new(0, 350, 0, 250)
+    ClientsOnline.Size = UDim2.new(0, 250, 0, 250)
 
     Title.Name = "Title"
     Title.Parent = ClientsOnline
@@ -557,7 +557,16 @@ function Hyperion:CreateChat()
         and UserInputService:IsKeyDown(Enum.KeyCode.LeftShift)
         or Input.KeyCode == Enum.KeyCode.T
         and UserInputService:IsKeyDown(Enum.KeyCode.RightShift) then
-            Container.Visible = not Container.Visible
+            local tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
+            if Container.Visible then
+                for i, v in pairs(Container:GetChildren()) do
+                    TweenService:Create(Tabs, tweenInfo, { Transparency = 0 }):Play()
+                end
+            else
+                for i, v in pairs(Container:GetChildren()) do
+                    TweenService:Create(Tabs, tweenInfo, { Transparency = 1 }):Play()
+                end
+            end
         end
     end)
 
@@ -566,7 +575,16 @@ function Hyperion:CreateChat()
         and UserInputService:IsKeyDown(Enum.KeyCode.LeftShift)
         or Input.KeyCode == Enum.KeyCode.P
         and UserInputService:IsKeyDown(Enum.KeyCode.RightShift) then
-            ClientsOnline.Visible = not ClientsOnline.Visible
+            local tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
+            if ClientsOnline.Visible then
+                for i, v in pairs(Container:GetChildren()) do
+                    TweenService:Create(ClientsOnline, tweenInfo, { Transparency = 0 }):Play()
+                end
+            else
+                for i, v in pairs(Container:GetChildren()) do
+                    TweenService:Create(ClientsOnline, tweenInfo, { Transparency = 1 }):Play()
+                end
+            end
         end
     end)
 
@@ -616,10 +634,12 @@ function Hyperion:CreateChat()
         local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
         if ChatTab == 2 then
             ChatTab = 1
+            Tab.Image = "rbxassetid://72456773280111"
             TweenService:Create(Tab, tweenInfo, { Rotation = 0 }):Play()
             TweenService:Create(Tabs, tweenInfo, { Position = UDim2.new(0, 0, 0, 0) }):Play()
         else
             ChatTab = 2
+            Tab.Image = "rbxassetid://111335953127713"
             TweenService:Create(Tab, tweenInfo, { Rotation = 180 }):Play()
             TweenService:Create(Tabs, tweenInfo, { Position = UDim2.new(-1, 0, 0, 0) }):Play()
         end
