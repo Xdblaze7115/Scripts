@@ -516,37 +516,16 @@ function Hyperion:CreateChat()
                 until success and response 
 
                 WS = response
+                
+                for _, child in pairs(List:GetChildren()) do
+                    if child:IsA("TextLabel") and child.Name == Player.Name then
+                        child:Destroy()
+                        break
+                    end
+                end
                 GUI:AttachListeners(WS)
             end)
         end)
-    end
-
-    function GUI:SmoothHideUI(table, parent)
-        local tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
-        if table[parent] == nil then
-            table[parent] = parent.BackgroundTransparency
-        end
-        TweenService:Create(parent, tweenInfo, {BackgroundTransparency = 1}):Play()
-
-        for _, v in ipairs(parent:GetDescendants()) do
-            if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("ImageLabel") or v:IsA("ImageButton") then
-                if table[v] == nil then
-                    table[v] = v.BackgroundTransparency
-                end
-                TweenService:Create(v, tweenInfo, {BackgroundTransparency = 1}):Play()
-            end
-        end
-        task.wait(tweenInfo.Time)
-    end
-
-    function GUI:SmoothUnHideUI(table)
-        local tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
-        for v, trans in pairs(table) do
-            if v and v.Parent then -- make sure object still exists
-                TweenService:Create(v, tweenInfo, {BackgroundTransparency = trans}):Play()
-            end
-        end
-        task.wait(tweenInfo.Time)
     end
 
     if TextChatService.ChatVersion == Enum.ChatVersion.LegacyChatService then
@@ -580,33 +559,27 @@ function Hyperion:CreateChat()
         warn("Failed to connect to WS initially")
     end
 
-    local ChatUITransparencies = {}
     UserInputService.InputBegan:Connect(function(Input)
         if Input.KeyCode == Enum.KeyCode.T
         and UserInputService:IsKeyDown(Enum.KeyCode.LeftShift)
         or Input.KeyCode == Enum.KeyCode.T
         and UserInputService:IsKeyDown(Enum.KeyCode.RightShift) then
             if Container.Visible then
-                GUI:SmoothHideUI(ChatUITransparencies, Container)
                 Container.Visible = false
             else
-                GUI:SmoothUnHideUI(ChatUITransparencies)
                 Container.Visible = true
             end
         end
     end)
 
-    local ClientsOnlineUITransparencies = {}
     UserInputService.InputBegan:Connect(function(Input)
         if Input.KeyCode == Enum.KeyCode.P
         and UserInputService:IsKeyDown(Enum.KeyCode.LeftShift)
         or Input.KeyCode == Enum.KeyCode.P
         and UserInputService:IsKeyDown(Enum.KeyCode.RightShift) then
             if ClientsOnline.Visible then
-                GUI:SmoothHideUI(ClientsOnlineUITransparencies, ClientsOnline)
                 ClientsOnline.Visible = false
             else
-                GUI:SmoothUnHideUI(ClientsOnlineUITransparencies)
                 ClientsOnline.Visible = true
             end
         end
