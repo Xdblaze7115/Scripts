@@ -93,7 +93,7 @@ function Hyperion:CreateChat()
     Tab.Position = UDim2.new(0, 428, 0, 10)
     Tab.Size = UDim2.new(0, 15, 0, 15)
     Tab.AutoButtonColor = false
-    Tab.Image = "rbxassetid://111236616824749"
+    Tab.Image = "rbxassetid://72456773280111"
 
     Tabs.Name = "Tabs"
     Tabs.Parent = Container
