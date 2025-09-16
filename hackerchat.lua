@@ -432,9 +432,6 @@ function Hyperion:CreateChat()
         }
 
         WS:Send(HttpService:JSONEncode(data))
-        GUI:NewMessageLabel(Chat, `<font color="#ff0000">WS</font> | <font color="#008CFF">{nickname}:</font> {message}`)
-        GUI:NewMessageLabel(WSF, `<font color="#ff0000">WS</font> | <font color="#008CFF">{nickname}:</font> {message}`)
-        GUI:NewBubble(username, message)
     end
 
     function GUI:SendChat(text)
