@@ -569,7 +569,9 @@ function Hyperion:CreateChat()
 
     UserInputService.InputBegan:Connect(function(Input)
         if TextBox:IsFocused() then return end
-        if Input.KeyCode == Enum.KeyCode.Slash and not UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) and not UserInputService:IsKeyDown(Enum.KeyCode.RightShift) then
+        if Input.KeyCode == Enum.KeyCode.Slash
+        and not UserInputService:IsKeyDown(Enum.KeyCode.LeftShift)
+        and not UserInputService:IsKeyDown(Enum.KeyCode.RightShift) then
             local Text = TextBox.Text
             TextBox:CaptureFocus()
             task.wait()
@@ -609,11 +611,21 @@ function Hyperion:CreateChat()
 
     Players.PlayerRemoving:Connect(function(plr)
         if plr == Player then
-            WSOnMessageConnection:Disconnect()
-            WSOncloseConnection:Disconnect()
-            WSOnMessageConnection = nil
-            WSOncloseConnection = nil
-            WS:Close()
+            if WSOncloseConnection then
+                WSOncloseConnection:Disconnect()
+                WSOncloseConnection = nil
+            end
+            if WSOnMessageConnection then
+                WSOnMessageConnection:Disconnect()
+                WSOnMessageConnection = nil
+            end
+            if WS then
+                WS:Close()
+                WS = nil
+            end
+
+            _G.HyperionLoaded = false
+            _G.ChatLoaded = false
         end
         GUI:NewMessageLabel(Chat, `<font color="#55ff7f">{plr.DisplayName} Has Left The Game</font>`)
     end)
