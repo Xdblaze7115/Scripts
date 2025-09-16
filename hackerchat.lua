@@ -92,6 +92,7 @@ function Hyperion:CreateChat()
     Tab.BorderSizePixel = 0
     Tab.Position = UDim2.new(0, 428, 0, 10)
     Tab.Size = UDim2.new(0, 15, 0, 15)
+    Tab.ZIndex = 2
     Tab.AutoButtonColor = false
     Tab.Image = "rbxassetid://72456773280111"
 
