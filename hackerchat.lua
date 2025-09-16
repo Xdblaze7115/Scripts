@@ -521,6 +521,34 @@ function Hyperion:CreateChat()
         end)
     end
 
+    function GUI:SmoothHideUI(table, parent)
+        local tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
+        if table[parent] == nil then
+            table[parent] = parent.BackgroundTransparency
+        end
+        TweenService:Create(parent, tweenInfo, {BackgroundTransparency = 0}):Play()
+
+        for _, v in ipairs(parent:GetDescendants()) do
+            if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("ImageLabel") or v:IsA("ImageButton") then
+                if table[v] == nil then
+                    table[v] = v.BackgroundTransparency
+                end
+                TweenService:Create(v, tweenInfo, {BackgroundTransparency = 0}):Play()
+            end
+        end
+        task.wait(tweenInfo.Time)
+    end
+
+    function GUI:SmoothUnHideUI(table)
+        local tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
+        for v, trans in pairs(table) do
+            if v and v.Parent then -- make sure object still exists
+                TweenService:Create(v, tweenInfo, {BackgroundTransparency = trans}):Play()
+            end
+        end
+        task.wait(tweenInfo.Time)
+    end
+
     if TextChatService.ChatVersion == Enum.ChatVersion.LegacyChatService then
         -- Legacy Chat
         ChatConnection = ReplicatedStorage.DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Connect(function(messageData)
@@ -552,32 +580,23 @@ function Hyperion:CreateChat()
         warn("Failed to connect to WS initially")
     end
 
+    local ChatUITransparencies = {}
     UserInputService.InputBegan:Connect(function(Input)
         if Input.KeyCode == Enum.KeyCode.T
         and UserInputService:IsKeyDown(Enum.KeyCode.LeftShift)
         or Input.KeyCode == Enum.KeyCode.T
         and UserInputService:IsKeyDown(Enum.KeyCode.RightShift) then
-            local tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
             if Container.Visible then
-                TweenService:Create(Container, tweenInfo, { BackgroundTransparency = 1 }):Play()
-                for i, v in pairs(Container:GetDescendants()) do
-                    if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("ImageLabel") or v:IsA("ImageButton") then
-                        TweenService:Create(v, tweenInfo, { BackgroundTransparency = 1 }):Play()
-                    end
-                end
+                GUI:SmoothHideUI(ChatUITransparencies, Container)
                 Container.Visible = false
             else
-                TweenService:Create(Container, tweenInfo, { BackgroundTransparency = 0.2 }):Play()
-                for i, v in pairs(Container:GetDescendants()) do
-                    if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("ImageLabel") or v:IsA("ImageButton") then
-                        TweenService:Create(v, tweenInfo, { BackgroundTransparency = 0 }):Play()
-                    end
-                end
+                GUI:SmoothUnHideUI(ChatUITransparencies)
                 Container.Visible = true
             end
         end
     end)
 
+    local ClientsOnlineUITransparencies = {}
     UserInputService.InputBegan:Connect(function(Input)
         if Input.KeyCode == Enum.KeyCode.P
         and UserInputService:IsKeyDown(Enum.KeyCode.LeftShift)
@@ -585,20 +604,10 @@ function Hyperion:CreateChat()
         and UserInputService:IsKeyDown(Enum.KeyCode.RightShift) then
             local tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
             if ClientsOnline.Visible then
-                TweenService:Create(ClientsOnline, tweenInfo, { BackgroundTransparency = 0 }):Play()
-                for i, v in pairs(ClientsOnline:GetDescendants()) do
-                    if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("ImageLabel") or v:IsA("ImageButton") then
-                        TweenService:Create(v, tweenInfo, { BackgroundTransparency = 1 }):Play()
-                    end
-                end
+                GUI:SmoothHideUI(ClientsOnlineUITransparencies, ClientsOnline)
                 ClientsOnline.Visible = false
             else
-                TweenService:Create(ClientsOnline, tweenInfo, { BackgroundTransparency = 0 }):Play()
-                for i, v in pairs(ClientsOnline:GetDescendants()) do
-                    if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("ImageLabel") or v:IsA("ImageButton") then
-                        TweenService:Create(v, tweenInfo, { BackgroundTransparency = 0.2 }):Play()
-                    end
-                end
+                GUI:SmoothUnHideUI(ClientsOnlineUITransparencies)
                 ClientsOnline.Visible = true
             end
         end
