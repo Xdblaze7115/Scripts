@@ -6,9 +6,6 @@ else
     _G.HyperionLoaded = true
 end
 
--- [ Globals ] --
-_G.ChatLoaded = false
-
 -- [ Connections ] --
 local WSOnMessageConnection = nil
 local WSOncloseConnection = nil
@@ -27,13 +24,8 @@ local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 
 -- [ Variables ] --
-local AliveClients = {}
-local WS = nil
-local WSEnabled = false
-
 local Player = Players.LocalPlayer
 local Mouse = Player:GetMouse()
-local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
 
 local Hyperion = {}
 
@@ -44,6 +36,7 @@ HyperionGui.ResetOnSpawn = false
 HyperionGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 function Hyperion:CreateChat()
+    _G.ChatLoaded = false
     if _G.ChatLoaded then return end
     _G.ChatLoaded = true
     StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
@@ -181,6 +174,7 @@ function Hyperion:CreateChat()
     TextBox_2.BackgroundTransparency = 0.200
     TextBox_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
     TextBox_2.BorderSizePixel = 0
+    TextBox_2.ClearTextOnFocus = false
     TextBox_2.Position = UDim2.new(0, 10, 0, 205)
     TextBox_2.Size = UDim2.new(0, 430, 0, 35)
     TextBox_2.Font = Enum.Font.SourceSansBold
@@ -247,7 +241,7 @@ function Hyperion:CreateChat()
     ClientsOnline.BorderColor3 = Color3.fromRGB(0, 0, 0)
     ClientsOnline.BorderSizePixel = 0
     ClientsOnline.Position = UDim2.new(0, 465, 0, 5)
-    ClientsOnline.Size = UDim2.new(0, 250, 0, 250)
+    ClientsOnline.Size = UDim2.new(0, 350, 0, 250)
 
     Title.Name = "Title"
     Title.Parent = ClientsOnline
@@ -264,8 +258,6 @@ function Hyperion:CreateChat()
     Title.TextSize = 16.000
     Title.TextStrokeTransparency = 0.500
     Title.TextWrapped = true
-    Title.TextXAlignment = Enum.TextXAlignment.Left
-    Title.TextYAlignment = Enum.TextYAlignment.Top
 
     UICorner_5.CornerRadius = UDim.new(0, 10)
     UICorner_5.Parent = ClientsOnline
@@ -299,6 +291,10 @@ function Hyperion:CreateChat()
     UIListLayout_3.Padding = UDim.new(0, 8)
     
 	local GUI = {}
+    local AliveClients = {}
+    local WS = nil
+    local WSEnabled = false
+    local ChatTab = 1
 
     function GUI:ToggleWS()
         WSEnabled = not WSEnabled
@@ -417,6 +413,7 @@ function Hyperion:CreateChat()
     end
 
     function GUI:SendWS(username, nickname, message)
+        if not WS then return end
         if message and #message > 100000 then
             message = message:sub(1, 100000)
         end
@@ -459,8 +456,8 @@ function Hyperion:CreateChat()
                     nickname = Player.DisplayName
                 }
                 ws:Send(HttpService:JSONEncode(data))
-                GUI:NewTextLabel(List, data.username, `<font color="#008CFF">{data.nickname}  ({data.username})</font>`)
             end
+            GUI:NewTextLabel(List, Player.Name, `<font color="#008CFF">{Player.Name} ({Player.DisplayName})</font>`)
         end)
 
         task.spawn(function()
@@ -482,16 +479,16 @@ function Hyperion:CreateChat()
                 end
             end
         end)
-
+        
         WSOnMessageConnection = ws.OnMessage:Connect(function(message)
             if not message then return end
             local data = HttpService:JSONDecode(message)
             if not data then return end
-
+            
             if data.type == "alive" then
                 if not data.username and data.nickname then return end
                 if not AliveClients[data.username] then
-                    GUI:NewTextLabel(List, data.username, `<font color="#008CFF">{data.nickname}  ({data.username})</font>`)
+                    GUI:NewTextLabel(List, data.username, `<font color="#008CFF">{data.nickname} ({data.username})</font>`)
                 end
                 AliveClients[data.username] = {
                     nickname = data.nickname,
@@ -556,13 +553,19 @@ function Hyperion:CreateChat()
     end
 
     UserInputService.InputBegan:Connect(function(Input)
-        if Input.KeyCode == Enum.KeyCode.T then
+        if Input.KeyCode == Enum.KeyCode.T
+        and UserInputService:IsKeyDown(Enum.KeyCode.LeftShift)
+        or Input.KeyCode == Enum.KeyCode.T
+        and UserInputService:IsKeyDown(Enum.KeyCode.RightShift) then
             Container.Visible = not Container.Visible
         end
     end)
 
     UserInputService.InputBegan:Connect(function(Input)
-        if Input.KeyCode == Enum.KeyCode.P then
+        if Input.KeyCode == Enum.KeyCode.P
+        and UserInputService:IsKeyDown(Enum.KeyCode.LeftShift)
+        or Input.KeyCode == Enum.KeyCode.P
+        and UserInputService:IsKeyDown(Enum.KeyCode.RightShift) then
             ClientsOnline.Visible = not ClientsOnline.Visible
         end
     end)
@@ -572,38 +575,15 @@ function Hyperion:CreateChat()
         and not UserInputService:IsKeyDown(Enum.KeyCode.LeftShift)
         and not UserInputService:IsKeyDown(Enum.KeyCode.RightShift) then
             if Tabs.Position == UDim2.new(0, 0, 0, 0) then
-                if TextBox_2:IsFocused() then return end
                 local Text = TextBox_2.Text
                 TextBox_2:CaptureFocus()
                 task.wait()
                 TextBox_2.Text = Text
             else
-                if TextBox:IsFocused() then return end
                 local Text = TextBox.Text
                 TextBox:CaptureFocus()
                 task.wait()
                 TextBox.Text = Text
-            end
-        end
-    end)
-
-    UserInputService.InputBegan:Connect(function(Input)
-        if Input.KeyCode == Enum.KeyCode.Return then
-            
-            if Tabs.Position == UDim2.new(0, 0, 0, 0) then
-                local EnteredText = TextBox_2.Text
-                if EnteredText == "" then return end
-                TextBox_2.Text = ""
-                if WSEnabled then
-                    GUI:SendWS(Player.Name, Player.DisplayName, EnteredText)
-                else
-                    GUI:SendChat(EnteredText)
-                end
-            else
-                local EnteredText = TextBox.Text
-                if EnteredText == "" then return end
-                TextBox.Text = ""
-                GUI:SendWS(Player.Name, Player.DisplayName, EnteredText)
             end
         end
     end)
@@ -620,7 +600,7 @@ function Hyperion:CreateChat()
         GUI:SendWS(Player.Name, Player.DisplayName, EnteredText)
     end)
 
-    ImageButton.MouseButton1Click:Connect(function()
+    ImageButton_2.MouseButton1Click:Connect(function()
         local EnteredText = TextBox_2.Text
         if EnteredText == "" then return end
         TextBox_2.Text = ""
@@ -629,6 +609,41 @@ function Hyperion:CreateChat()
             GUI:SendWS(Player.Name, Player.DisplayName, EnteredText)
         else
             GUI:SendChat(EnteredText)
+        end
+    end)
+
+    Tab.MouseButton1Click:Connect(function()
+        local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
+        if ChatTab == 2 then
+            ChatTab = 1
+            TweenService:Create(Tab, tweenInfo, { Rotation = 0 }):Play()
+            TweenService:Create(Tabs, tweenInfo, { Position = UDim2.new(0, 0, 0, 0) }):Play()
+        else
+            ChatTab = 2
+            TweenService:Create(Tab, tweenInfo, { Rotation = 180 }):Play()
+            TweenService:Create(Tabs, tweenInfo, { Position = UDim2.new(-1, 0, 0, 0) }):Play()
+        end
+    end)
+
+    TextBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            local EnteredText = TextBox.Text
+            if EnteredText == "" then return end
+            TextBox.Text = ""
+            GUI:SendWS(Player.Name, Player.DisplayName, EnteredText)
+        end
+    end)
+
+    TextBox_2.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            local EnteredText = TextBox_2.Text
+            if EnteredText == "" then return end
+            TextBox_2.Text = ""
+            if WSEnabled then
+                GUI:SendWS(Player.Name, Player.DisplayName, EnteredText)
+            else
+                GUI:SendChat(EnteredText)
+            end
         end
     end)
 
