@@ -561,14 +561,14 @@ function Hyperion:CreateChat()
             if Container.Visible then
                 TweenService:Create(Container, tweenInfo, { BackgroundTransparency = 1 }):Play()
                 for i, v in pairs(Container:GetDescendants()) do
-                    if not v.Transparency then return end
+                    if v.BackgroundTransparency == nil then return end
                     TweenService:Create(v, tweenInfo, { BackgroundTransparency = 1 }):Play()
                 end
                 Container.Visible = false
             else
                 TweenService:Create(Container, tweenInfo, { BackgroundTransparency = 0.2 }):Play()
                 for i, v in pairs(Container:GetDescendants()) do
-                    if not v.Transparency then return end
+                    if v.BackgroundTransparency == nil then return end
                     TweenService:Create(v, tweenInfo, { BackgroundTransparency = 0 }):Play()
                 end
                 Container.Visible = true
@@ -585,14 +585,14 @@ function Hyperion:CreateChat()
             if ClientsOnline.Visible then
                 TweenService:Create(ClientsOnline, tweenInfo, { BackgroundTransparency = 0 }):Play()
                 for i, v in pairs(ClientsOnline:GetDescendants()) do
-                    if not v.Transparency then return end
+                    if v.BackgroundTransparency == nil then return end
                     TweenService:Create(v, tweenInfo, { BackgroundTransparency = 1 }):Play()
                 end
                 ClientsOnline.Visible = false
             else
                 TweenService:Create(ClientsOnline, tweenInfo, { BackgroundTransparency = 0 }):Play()
                 for i, v in pairs(ClientsOnline:GetDescendants()) do
-                    if not v.Transparency then return end
+                    if v.BackgroundTransparency == nil then return end
                     TweenService:Create(v, tweenInfo, { BackgroundTransparency = 0.2 }):Play()
                 end
                 ClientsOnline.Visible = true
